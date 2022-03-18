@@ -7,6 +7,55 @@ const pool = new Pool({
     port: 5432,
 })
 
+// 'id_registro':idRegistro,
+//       'curso':curso,
+//       'cct':cct,
+//       'unidad':unidad,
+//       'clave':clave,
+//       'mod':mod,
+//       'inicio':inicio,
+//       'termino':termino,
+//       'area':area,
+//       'espe':espe,
+//       'tcapacitacion':tcapacitacion,
+//       'depen':depen,
+//       'tipoCurso':tipoCurso,
+const getAllGrupos = (request, response) => {
+    pool.query(
+        'SELECT id,curso,cct,unidad,clave,mod,inicio,termino,area,espe,tcapacitacion, depen, tipo_curso FROM tbl_cursos ', (error, results) => {
+            if (error) {
+                throw error
+            }
+            console.log('getAllGrupos done');
+            response.status(200).json(results.rows);
+        }
+    )
+}
+
+const getAllAlumnosInscritos = (request, response) => {
+    pool.query(
+        'SELECT id,matricula,alumno,curp FROM tbl_inscripcion ', (error, results) => {
+            if (error) {
+                throw error
+            }
+            console.log('getAllAlumnosInscritos done');
+            response.status(200).json(results.rows);
+        }
+    )
+}
+
+const getAllAlumnosPre= (request, response) => {
+        pool.query(
+            'SELECT id, nombre, apellido_paterno, apellido_materno, correo,telefono, curp, sexo, fecha_nacimiento, domicilio, colonia, municipio,estado, estado_civil, matricula  FROM alumnos_pre ', (error, results) => {
+                if (error) {
+                    throw error
+                }
+                console.log('getAllAlumnosPre done');
+                response.status(200).json(results.rows);
+            }
+        )
+    }
+
 const getGrupoByClave = (request, response) => {
     const clave = request.body.clave;
     console.log(clave);
@@ -57,6 +106,9 @@ const getInfoAlumnosByCURP = (request, response) => {
 
 
 module.exports = {
+    getAllGrupos,
+    getAllAlumnosInscritos,
+    getAllAlumnosPre,
     getGrupoByClave,
     getAlumnosByClaveGrupo,
     getInfoAlumnosByCURP
