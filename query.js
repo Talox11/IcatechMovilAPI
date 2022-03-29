@@ -7,19 +7,7 @@ const pool = new Pool({
     port: 5432,
 })
 
-// 'id_registro':idRegistro,
-//       'curso':curso,
-//       'cct':cct,
-//       'unidad':unidad,
-//       'clave':clave,
-//       'mod':mod,
-//       'inicio':inicio,
-//       'termino':termino,
-//       'area':area,
-//       'espe':espe,
-//       'tcapacitacion':tcapacitacion,
-//       'depen':depen,
-//       'tipoCurso':tipoCurso,
+
 const getAllGrupos = (request, response) => {
     pool.query(
         'SELECT id,curso,cct,unidad,clave,mod,inicio,termino,area,espe,tcapacitacion, depen, tipo_curso FROM tbl_cursos ', (error, results) => {
@@ -34,7 +22,7 @@ const getAllGrupos = (request, response) => {
 
 const getAllAlumnosInscritos = (request, response) => {
     pool.query(
-        'SELECT id,matricula,alumno,curp FROM tbl_inscripcion ', (error, results) => {
+        'SELECT id,matricula,alumno,curp,id_curso FROM tbl_inscripcion ', (error, results) => {
             if (error) {
                 throw error
             }
@@ -46,7 +34,7 @@ const getAllAlumnosInscritos = (request, response) => {
 
 const getAllAlumnosPre= (request, response) => {
         pool.query(
-            'SELECT id, nombre, apellido_paterno, apellido_materno, correo,telefono, curp, sexo, fecha_nacimiento, domicilio, colonia, municipio,estado, estado_civil, matricula  FROM alumnos_pre ', (error, results) => {
+            'SELECT id, nombre, apellido_paterno, apellido_materno, correo,telefono, curp, sexo, fecha_nacimiento, domicilio, colonia, municipio,estado, estado_civil, matricula  FROM alumnos_pre  ', (error, results) => {
                 if (error) {
                     throw error
                 }
@@ -60,7 +48,7 @@ const getGrupoByClave = (request, response) => {
     const clave = request.body.clave;
     console.log(clave);
     pool.query(
-        'SELECT id,curso,cct,unidad,clave,inicio,termino FROM tbl_cursos ' + ''
+        'SELECT id,curso,cct,unidad,clave, mod,inicio,termino, area, espe, tcapacitacion, depen,tipo_curso FROM tbl_cursos ' + ''
         + '  WHERE clave = $1 ', [clave], (error, results) => {
 
             if (error) {
@@ -76,9 +64,10 @@ const getAlumnosByClaveGrupo = (request, response) => {
     const idCurso = parseInt(request.params.idCurso);
 
     pool.query(
-        'SELECT DISTINCT i.matricula, i.alumno as nombre, i.curp ' + ''
-        + ' FROM tbl_inscripcion AS i ' + ''
-        + '  WHERE i.id_curso = $1 ', [idCurso], (error, results) => {
+            'SELECT P.id,I.matricula, P.nombre, P.apellido_paterno, P.apellido_materno, P.correo, P.telefono, P.sexo, '+''+
+            ' P.fecha_nacimiento, P.domicilio, P.colonia, P.municipio, P.estado, P.estado_civil, I.curp,I.id_curso FROM tbl_inscripcion as I  '+''+
+            ' INNER JOIN alumnos_pre AS P on P.curp = I.curp' +''+
+            ' WHERE i.id_curso = $1 ', [idCurso], (error, results) => {
             if (error) {
                 throw error
             }

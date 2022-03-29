@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./query.js');
+const db2 = require('./inserts.js');
 const app = express();
 const port = 5000;
 
@@ -22,7 +23,7 @@ app.listen(port, () => {
 
 
 app.get('/', (request, response) => {
-    response.json({ info: 'Node.js, Express, and Postgres API' })
+    response.json({ info: 'Node.js, Express, and Postgres API server talox' })
 })
 
 app.get('/list/grupo', db.getAllGrupos)
@@ -31,3 +32,6 @@ app.get('/list/alumnosPre', db.getAllAlumnosPre)
 app.post('/curso/', db.getGrupoByClave)
 app.get('/curso/:idCurso', db.getAlumnosByClaveGrupo)
 app.get('/info/alumno/:curp', db.getInfoAlumnosByCURP)
+
+
+// app.post()
