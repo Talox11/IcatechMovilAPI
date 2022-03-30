@@ -1,0 +1,10 @@
+NODE_ENV=
+API_URL = 
+
+
+#database env
+DB_USERNAME = 
+DB_HOST = 
+DB_PASSWORD = 
+DB_DATABASE =
+DB_PORT =
