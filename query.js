@@ -1,16 +1,16 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
     user: 'postgres',
-    host: '0.tcp.ngrok.io',
+    host: 'tcp.ngrok.io',
     database: 'test',
     password: '8552',
-    port: 16394,
+    port: 12577,
 })
 
 
 const getAllGrupos = (request, response) => {
     pool.query(
-        'SELECT id,curso,cct,unidad,clave,mod,inicio,termino,area,espe,tcapacitacion, depen, tipo_curso FROM tbl_cursos ', (error, results) => {
+        'SELECT id,curso,cct,unidad,clave,mod,inicio,termino,area,espe,tcapacitacion, depen, tipo_curso FROM tbl_cursos limit 3000', (error, results) => {
             if (error) {
                 throw error
             }
@@ -22,7 +22,7 @@ const getAllGrupos = (request, response) => {
 
 const getAllAlumnosInscritos = (request, response) => {
     pool.query(
-        'SELECT id,matricula,alumno,curp,id_curso FROM tbl_inscripcion ', (error, results) => {
+        'SELECT id,matricula,alumno,curp,id_curso FROM tbl_inscripcion limit 3000', (error, results) => {
             if (error) {
                 throw error
             }
@@ -34,7 +34,7 @@ const getAllAlumnosInscritos = (request, response) => {
 
 const getAllAlumnosPre= (request, response) => {
         pool.query(
-            'SELECT id, nombre, apellido_paterno, apellido_materno, correo,telefono, curp, sexo, fecha_nacimiento, domicilio, colonia, municipio,estado, estado_civil, matricula  FROM alumnos_pre  ', (error, results) => {
+            'SELECT id, nombre, apellido_paterno, apellido_materno, correo,telefono, curp, sexo, fecha_nacimiento, domicilio, colonia, municipio,estado, estado_civil, matricula  FROM alumnos_pre  limit 3000', (error, results) => {
                 if (error) {
                     throw error
                 }
