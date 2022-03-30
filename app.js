@@ -33,5 +33,3 @@ app.post('/curso/', db.getGrupoByClave)
 app.get('/curso/:idCurso', db.getAlumnosByClaveGrupo)
 app.get('/info/alumno/:curp', db.getInfoAlumnosByCURP)
 
-
-// app.post()
