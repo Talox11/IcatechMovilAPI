@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./query.js');
-const db2 = require('./inserts.js');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -25,6 +24,9 @@ app.listen(port, () => {
 app.get('/', (request, response) => {
     response.json({ info: 'Node.js, Express, and Postgres API ' })
 })
+
+
+app.post('/grupo/insert', db.insertAuditoria)
 
 app.get('/list/grupo', db.getAllGrupos)
 app.get('/list/alumnosInscritos', db.getAllAlumnosInscritos)

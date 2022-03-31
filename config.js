@@ -13,7 +13,7 @@ module.exports = {
 
 
   PG_DB_USERNAME: process.env.PG_DB_USERNAME || 'postgres',
-  PG_DB_HOST: process.env.PG_DB_HOST || 'localhost',
+  PG_DB_HOST: process.env.PG_DB_HOST || '127.0.0.1',
   PG_DB_PASSWORD: process.env.PG_DB_PASSWORD || '8552',
   PG_DB_DATABASE: process.env.PG_DB_DATABASE || 'test',
   PG_DB_PORT: process.env.PG_DB_PORT || 5432,
