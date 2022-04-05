@@ -10,15 +10,85 @@ const pgPool = new Pool({
     port: env.PG_DB_PORT,
 })
 
+
+var mysql = require('mysql');
+const { format } = require('express/lib/response');
+
+var pool = mysql.createPool({
+    connectionLimit: 20,
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'wwicat_db_auditoria'
+});
+
+
+const testMysql = (request, response) => {
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query("SELECT * FROM test", function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+            response.status(200).json(result);
+        });
+        connection.release();
+    });
+}
+const testMysqlId = (request, response) => {
+    let id = request.params.id;
+    var sql = 'SELECT * FROM test where id = ?';
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query(sql, [id], function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+            response.status(200).json(result);
+        });
+        connection.release();
+    });
+}
+
+const saveTest = (request, response) => {
+    let title = request.body.title;
+    let subtitle = request.body.subtitle;
+    let ip = request.socket.remoteAddress
+    var sql = "INSERT INTO test (tittle, subttilte) VALUES (?,?)";
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query(sql, [title, subtitle], function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+            response.status(200).json('row inserted with id->'+result.insertId);
+            console.log('request by -> '+ip);
+        });
+        connection.release();
+    });
+}
+const updateTest = (request, response) => {
+    let title = request.body.title;
+    let subtitle = request.body.subtitle;
+    let id = request.params.id;
+    var sql = "UPDATE test SET tittle = ?, subttilte = ? WHERE id = ?";
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+        connection.query(sql, [title, subtitle, id], function (err, result, fields) {
+            if (err) throw err;
+            console.log(result);
+            response.status(200).json('row update ->'+result);
+        });
+        connection.release();
+    });
+}
+
 const insertAuditoria = async (request, response) => {
     const grupo = request.body.grupo;
     const alumnos = request.body.alumnos;
-    
-    await trx.createNewAuditoria(grupo, alumnos).then((value)=>{
+    console.log(request.body);
+    await trx.createNewAuditoria(grupo, alumnos).then((value) => {
         console.log(value);
-        if(value == 'done'){
+        if (value == 'done') {
             response.status(201).json('inserted');
-        }else{
+        } else {
             response.status(500).json('err');
         }
     });
@@ -27,7 +97,7 @@ const insertAuditoria = async (request, response) => {
 
 const getAllGrupos = (request, response) => {
     pgPool.query(
-        'SELECT id,curso,cct,unidad,clave,mod,inicio,termino,area,espe,tcapacitacion, depen, tipo_curso FROM tbl_cursos limit 3', (error, results) => {
+        'SELECT id,curso,cct,unidad,clave,mod,inicio,termino,area,espe,tcapacitacion, depen, tipo_curso FROM tbl_cursos limit 1', (error, results) => {
             if (error) {
                 throw error
             }
@@ -113,6 +183,10 @@ const getInfoAlumnosByCURP = (request, response) => {
 
 
 module.exports = {
+    testMysql,
+    testMysqlId,
+    saveTest,
+    updateTest,
     insertAuditoria,
     getAllGrupos,
     getAllAlumnosInscritos,

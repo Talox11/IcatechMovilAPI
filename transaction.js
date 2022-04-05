@@ -16,13 +16,10 @@ async function createNewAuditoria(grupo, alumnos) {
         },
     };
 
-   
-    // console.log(alumnos);
-    // var a[0] = JSON.parse(alumnos);
     
     const connection = await mysql.createConnection(config.db);
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-    //set wait timeout and lock wait timeout as per need.
+    
     await connection.beginTransaction();
     try {
         
