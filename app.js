@@ -18,26 +18,19 @@ app.use(
 
 let ip = '192.168.100.228';
 app.listen(port,() => {
-    console.log(`listening on port ${port} =>${ip} `);
+    console.log(`listening on port ${port} `);
 })
-
 
 app.get('/', (request, response) => {
     response.json({ info: 'Node.js, Express, and Postgres API '+env.NODE_ENV })
 })
 
-app.get('/test/mysql', db.testMysql);
-app.get('/test/:id', db.testMysqlId);
-app.post('/test/insert', db.saveTest);
-app.post('/test/update/:id', db.updateTest);
-
 
 app.post('/grupo/insert', db.insertAuditoria)
-
-app.get('/list/grupo', db.getAllGrupos)
-app.get('/list/alumnosInscritos', db.getAllAlumnosInscritos)
-app.get('/list/alumnosPre', db.getAllAlumnosPre)
+app.get('/reportes/lista', db.reportesLista)
 app.post('/curso/', db.getGrupoByClave)
 app.get('/curso/:idCurso', db.getAlumnosByClaveGrupo)
 app.get('/info/alumno/:curp', db.getInfoAlumnosByCURP)
+app.get('/ultima-supervision', db.getLastSupervision)
+
 
