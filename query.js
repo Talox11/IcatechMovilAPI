@@ -38,15 +38,17 @@ const reportesLista = (request, response) => {
 const insertAuditoria = async (request, response) => {
     const grupo = request.body.grupo;
     const alumnos = request.body.alumnos;
+    const id_supervisor = request.body.id_supervisor;
     console.log(request.body);
-    await trx.createNewAuditoria(grupo, alumnos).then((value) => {
-        console.log(value);
+    await trx.createNewAuditoria(grupo, alumnos, id_supervisor).then((value) => {
+        
         if (value == 'done') {
             response.status(201).json('inserted');
         } else {
             response.status(500).json('err');
         }
     });
+    
     // process.exit(0);
 }
 const getLastSupervision = async (request, response) => {
