@@ -49,6 +49,44 @@ async function createNewAuditoria(grupo, alumnos) {
     }
 }
 
+async function cursoUltimaSupervision(grupo) {
+    const config = {
+        db: { /* do not put password or any sensitive info here, done only for demo */
+            host: env.MYSQL_DB_HOST || 'localhost',
+            user: env.MYSQL_DB_USERNAME || 'root',
+            password: env.MYSQL_DB_PASSWORD || '',
+            database: env.MYSQL_DB_DATABASE || 'wwicat_db_auditoria',
+            port: env.MYSQL_DB_PORT || 3306,
+            waitForConnections: true,
+            connectionLimit: env.DB_CONN_LIMIT || 10,
+            queueLimit: 0,
+            debug: env.DB_DEBUG || false
+        },
+    };
+
+    
+    const connection = await mysql.createConnection(config.db);
+    await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+    
+    await connection.beginTransaction();
+    try {
+        
+        var g = JSON.parse(grupo);
+        
+        let stmtG = "SELECT * FROM `grupo_auditado` where id = ?";
+        let itemG = [g];
+        
+        var result = await connection.execute(stmtG, itemG);
+        await connection.commit();
+        return result[0][0];
+    } catch (err) {
+        console.error(`Error occurred while creating register: ${err.message}`, err);
+        connection.rollback();
+        console.info('Rollback successful');
+        return 'err';
+    }
+}
 module.exports = {
-    createNewAuditoria
+    createNewAuditoria,
+    cursoUltimaSupervision, 
 }

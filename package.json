@@ -2,7 +2,7 @@
   "name": "icatechmovilapi",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "nodemon app.js",
@@ -23,6 +23,7 @@
     "express": "^4.17.3",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
+    "node-openvpn": "^0.1.1",
     "pg": "^8.7.3"
   },
   "devDependencies": {
