@@ -1,7 +1,8 @@
 const mysql = require('mysql2/promise');
 const env = require('./config');
 
-async function createNewAuditoria(grupo, alumnos) {
+async function createNewAuditoria(grupo, alumnos, id_supervisor) {
+    console.log(id_supervisor);
     const config = {
         db: { /* do not put password or any sensitive info here, done only for demo */
             host: env.MYSQL_DB_HOST || 'localhost',
@@ -24,8 +25,8 @@ async function createNewAuditoria(grupo, alumnos) {
     try {
         
         var g = JSON.parse(grupo);
-        let stmtG = "INSERT INTO `grupo_auditado` (`id`, `curso`, `cct`, `unidad`, `clave`, `mod`, `area`, `espe`, `tcapacitacion`, `depen`, `tipo_curso`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        let itemG = [g.curso, g.cct, g.unidad, g.clave, g.mod, g.area, g.espe, g.tcapacitacion, g.depen, g.tipo_curso];
+        let stmtG = "INSERT INTO `grupo_auditado` (`id`,`id_supervisor`, `curso`, `cct`, `unidad`, `clave`, `mod`, `area`, `espe`, `tcapacitacion`, `depen`, `tipo_curso`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        let itemG = [id_supervisor, g.curso, g.cct, g.unidad, g.clave, g.mod, g.area, g.espe, g.tcapacitacion, g.depen, g.tipo_curso];
         
         var result = await connection.execute(stmtG, itemG);
         var grupoIdInserted = result[0]['insertId'];
