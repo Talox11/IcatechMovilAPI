@@ -50,7 +50,7 @@ async function createNewAuditoria(grupo, alumnos, id_supervisor) {
     }
 }
 
-async function cursoUltimaSupervision(grupo) {
+async function historialSupervisiones(idSupervisor) {
     const config = {
         db: { /* do not put password or any sensitive info here, done only for demo */
             host: env.MYSQL_DB_HOST || 'localhost',
@@ -64,7 +64,7 @@ async function cursoUltimaSupervision(grupo) {
             debug: env.DB_DEBUG || false
         },
     };
-
+    
     
     const connection = await mysql.createConnection(config.db);
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
@@ -72,14 +72,13 @@ async function cursoUltimaSupervision(grupo) {
     await connection.beginTransaction();
     try {
         
-        var g = JSON.parse(grupo);
         
-        let stmtG = "SELECT * FROM `grupo_auditado` where id = ?";
-        let itemG = [g];
+        let stmtG = "SELECT * FROM `grupo_auditado` where id_supervisor = ?";
+        let params = [idSupervisor];
         
-        var result = await connection.execute(stmtG, itemG);
+        var result = await connection.execute(stmtG, params);
         await connection.commit();
-        return result[0][0];
+        return result[0];
     } catch (err) {
         console.error(`Error occurred while creating register: ${err.message}`, err);
         connection.rollback();
@@ -89,5 +88,5 @@ async function cursoUltimaSupervision(grupo) {
 }
 module.exports = {
     createNewAuditoria,
-    cursoUltimaSupervision, 
+    historialSupervisiones, 
 }
