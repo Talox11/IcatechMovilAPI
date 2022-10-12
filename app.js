@@ -31,6 +31,6 @@ app.get('/reportes/lista', db.reportesLista)
 app.post('/curso/', db.getGrupoByClave)
 app.get('/curso/:idCurso', db.getAlumnosByClaveGrupo)
 app.get('/info/alumno/:curp', db.getInfoAlumnosByCURP)
-app.get('/ultima-supervision', db.getLastSupervision)
+app.post('/historial-supervisiones', db.historialSupervisiones)
 
 

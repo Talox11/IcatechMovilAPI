@@ -16,10 +16,10 @@ const { format } = require('express/lib/response');
 
 var pool = mysql.createPool({
     connectionLimit: 20,
-    host: 'localhost',
-    user: 'root',
+    host: env.MYSQL_DB_HOST,
+    user: env.MYSQL_DB_USERNAME,
     password: '',
-    database: 'wwicat_db_auditoria'
+    database: env.MYSQL_DB_DATABASE
 });
 
 
@@ -51,9 +51,10 @@ const insertAuditoria = async (request, response) => {
     
     // process.exit(0);
 }
-const getLastSupervision = async (request, response) => {
-    const grupo = request.body.idCurso;
-    await trx.cursoUltimaSupervision(grupo).then((value) => {
+const historialSupervisiones = async (request, response) => {
+    const idSupervisor = request.body.id_supervisor;
+    await trx.historialSupervisiones(idSupervisor).then((value) => {
+        
         response.status(200).json(value);
     });
     // process.exit(0);
@@ -122,5 +123,5 @@ module.exports = {
     getGrupoByClave,
     getAlumnosByClaveGrupo,
     getInfoAlumnosByCURP,
-    getLastSupervision
+    historialSupervisiones
 }
