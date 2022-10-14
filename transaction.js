@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 const env = require('./config');
 
 async function createNewAuditoria(grupo, alumnos, id_supervisor) {
-    console.log(id_supervisor);
+    
     const config = {
         db: { /* do not put password or any sensitive info here, done only for demo */
             host: env.MYSQL_DB_HOST || 'localhost',
@@ -23,21 +23,38 @@ async function createNewAuditoria(grupo, alumnos, id_supervisor) {
     
     await connection.beginTransaction();
     try {
-        
         var g = JSON.parse(grupo);
-        let stmtG = "INSERT INTO `grupo_auditado` (`id`,`id_supervisor`, `curso`, `cct`, `unidad`, `clave`, `mod`, `area`, `espe`, `tcapacitacion`, `depen`, `tipo_curso`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        let itemG = [id_supervisor, g.curso, g.cct, g.unidad, g.clave, g.mod, g.area, g.espe, g.tcapacitacion, g.depen, g.tipo_curso];
+        let stmtAux = "SELECT id FROM `grupo_auditado` where clave=? and id_supervisor = ?";
+        let params = [g.clave, id_supervisor];
         
-        var result = await connection.execute(stmtG, itemG);
-        var grupoIdInserted = result[0]['insertId'];
+        var cursoExist = await connection.execute(stmtAux, params);
+        //console.log(cursoExist[0]);
+        //exit;
+        
+        if(cursoExist[0].length>0){
+            //console.log(cursoExist[0]);
+            var grupoIdInserted = cursoExist[0]['id'];
+            
+        }else{
+            //console.log(g);
+            let stmtG = "INSERT INTO `grupo_auditado` (`id`,`id_supervisor`, `curso`, `cct`, `unidad`, `clave`, `mod`, `area`, `espe`, `tcapacitacion`, `depen`, `tipo_curso`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            let itemG = [id_supervisor, g.curso, g.cct, g.unidad, g.clave, g.mod, g.area, g.espe, g.tcapacitacion, g.depen, g.tipo_curso];
+            
+            var result = await connection.execute(stmtG, itemG);
+            var grupoIdInserted = result[0]['insertId'];
+        }
+        
+        
 
         
         var a = JSON.parse(alumnos);
         let stmtA = "INSERT INTO `alumno_auditado` (`id`, `nombre`, `curp`, `matricula`, `apellido_paterno`, `apellido_materno`, `correo`, `telefono`, `sexo`, `fecha_nacimiento`, `domicilio`, `estado`, `estado_civil`, `entidad_nacimiento`, `seccion_vota`, `calle`, `num_ext`, `num_int`, `observaciones`, `resp_satisfaccion`, `com_satisfaccion`, `id_curso`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         for(var i in a){
-            let itemA = [ a[i].nombre, a[i].curp, a[i].matricula, a[i].apellido_paterno, a[i].apellido_materno, a[i].correo, a[i].telefono, a[i].sexo, a[i].fecha_nacimiento, a[i].domicilio, a[i].estado, a[i].estado_civil, a[i].entidad_nacimiento, a[i].seccion_vota, a[i].calle , a[i].numExt, a[i].numInt, a[i].observaciones, a[i].resp_satisfaccion, a[i].com_satisfaccion, grupoIdInserted];
-            await connection.execute(stmtA, itemA);
+            if(a[i].entidad_nacimiento){
+                let itemA = [ a[i].nombre, a[i].curp, a[i].matricula, a[i].apellido_paterno, a[i].apellido_materno, a[i].correo, a[i].telefono, a[i].sexo, a[i].fecha_nacimiento, a[i].domicilio, a[i].estado, a[i].estado_civil, a[i].entidad_nacimiento, a[i].seccion_vota, a[i].calle , a[i].numExt, a[i].numInt, a[i].observaciones, a[i].resp_satisfaccion, a[i].com_satisfaccion, grupoIdInserted];
+                await connection.execute(stmtA, itemA);
+            }
         }
         console.log('Grupo inserted\nAlumnos inserted');
         await connection.commit();

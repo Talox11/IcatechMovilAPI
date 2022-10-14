@@ -39,7 +39,7 @@ const insertAuditoria = async (request, response) => {
     const grupo = request.body.grupo;
     const alumnos = request.body.alumnos;
     const id_supervisor = request.body.id_supervisor;
-    console.log(request.body);
+    
     await trx.createNewAuditoria(grupo, alumnos, id_supervisor).then((value) => {
         
         if (value == 'done') {
